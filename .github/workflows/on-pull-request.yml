@@ -105,6 +105,9 @@ jobs:
 
   tests:
     runs-on: ubuntu-20.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.49.1-noble
+      options: --user 1001
     if: github.event.pull_request.draft == false
     needs: ["deployment"]
     steps:
@@ -118,24 +121,8 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - name: Get installed Playwright version
-        id: playwright-version
-        run: echo "PLAYWRIGHT_VERSION=$(npx playwright -V)" >> $GITHUB_ENV
-
-      - name: Cache playwright binaries
-        uses: actions/cache@v4
-        id: playwright-cache
-        with:
-          path: |
-            ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
-
       - name: Install project dependencies
         run: npm ci
-
-      - name: Install Playwright dependencies
-        run: npx playwright install --with-deps chromium
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
 
       - name: Run Component Tests
         run: npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
