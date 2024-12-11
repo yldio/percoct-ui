@@ -55,10 +55,7 @@ jobs:
           level: warning
           fail_on_error: true
 
-      - name: Build Project
-        run: npm run compile
-
-  deploy-preview:
+  build:
     runs-on: ubuntu-20.04
     if: github.event.pull_request.draft == false
     steps:
@@ -77,8 +74,46 @@ jobs:
           npm ci
           npm run build-storybook
 
+  deployment:
+    runs-on: ubuntu-20.04
+    if: github.event.pull_request.draft == false
+    needs: ["build"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
         with:
           custom-url: percoct-ui.yld.engineering
           source-dir: ./storybook-static/
+
+  tests:
+    runs-on: ubuntu-20.04
+    if: github.event.pull_request.draft == false
+    needs: ["deploy-preview"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run Component Tests
+        run: npm run test-storybook
+        env:
+          SB_URL: "${{ github.jobs.deployment.outputs.deployment-url }}"

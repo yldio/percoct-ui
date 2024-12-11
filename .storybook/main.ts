@@ -1,4 +1,12 @@
 import { type StorybookConfig } from "@storybook/react-vite";
+import type { AddonOptionsWebpack } from "@storybook/addon-coverage";
+
+const coverageConfig: AddonOptionsWebpack = {
+  istanbul: {
+    include: ["**/src/*", "**/src/**"],
+    exclude: ["**/exampleDirectory/**"],
+  },
+};
 
 const config: StorybookConfig = {
   stories: [
@@ -10,7 +18,11 @@ const config: StorybookConfig = {
     "@storybook/addon-onboarding",
     "@storybook/addon-essentials",
     "@chromatic-com/storybook",
-    "@storybook/addon-interactions",
+    {
+      name: "@storybook/addon-coverage",
+      options: coverageConfig,
+    },
+    "@storybook/experimental-addon-test"
   ],
   framework: {
     name: "@storybook/react-vite",
