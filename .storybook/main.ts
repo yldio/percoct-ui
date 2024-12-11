@@ -22,7 +22,7 @@ const config: StorybookConfig = {
       name: "@storybook/addon-coverage",
       options: coverageConfig,
     },
-    "@storybook/experimental-addon-test"
+    "@storybook/experimental-addon-test",
   ],
   framework: {
     name: "@storybook/react-vite",
