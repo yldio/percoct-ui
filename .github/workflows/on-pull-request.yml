@@ -115,8 +115,10 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+      - name: Install dependencies
+        run: |
+          npx playwright install --with-deps
+          npm ci
 
       - name: Run Component Tests
         run: npm run test-storybook
