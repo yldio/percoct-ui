@@ -125,3 +125,9 @@ jobs:
 
       - name: Run Component Tests
         run: npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
+
+      - name: Coverage Diff
+        uses: greatwizard/coverage-diff-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          coverage-filename: ./coverage/storybook/coverage-storybook.json
