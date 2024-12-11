@@ -124,6 +124,4 @@ jobs:
           npx playwright install --with-deps
 
       - name: Run Component Tests
-        run: npm run test-storybook
-        env:
-          SB_URL: "${{ needs.deployment.outputs.deployment-url }}"
+        run: npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
