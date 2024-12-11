@@ -83,6 +83,8 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.event.pull_request.draft == false
     needs: ["build"]
+    outputs:
+      deployment-url: ${{ steps.preview.outputs.deployment-url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -119,9 +121,9 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          npx playwright install  --install-deps
+          npx playwright install --with-deps
 
       - name: Run Component Tests
         run: npm run test-storybook
         env:
-          SB_URL: "${{ jobs.needs.preview.outputs.deployment-url }}"
+          SB_URL: "${{ needs.deployment.outputs.deployment-url }}"
