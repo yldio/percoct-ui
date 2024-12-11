@@ -1,0 +1,84 @@
+name: Feature Branch
+
+on:
+  pull_request:
+    paths:
+      - ".storybook/**"
+      - "src/**"
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+concurrency: preview-${{ github.ref }}
+
+jobs:
+  sanity-checks:
+    runs-on: ubuntu-20.04
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prettier
+        uses: EPMatt/reviewdog-action-prettier@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: warning
+          fail_on_error: true
+
+      - name: Lint
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review # Change reporter.
+          level: warning
+          fail_level: "error"
+
+      - name: Typecheck
+        uses: EPMatt/reviewdog-action-tsc@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: warning
+          fail_on_error: true
+
+      - name: Build Project
+        run: npm run compile
+
+  deploy-preview:
+    runs-on: ubuntu-20.04
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Build Storybook
+        run: |
+          npm ci
+          npm run build-storybook
+
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          custom-url: percoct-ui.yld.engineering
+          source-dir: ./storybook-static/
