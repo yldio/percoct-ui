@@ -118,10 +118,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npx playwright install 
           npm ci
+          npx playwright install  --install-deps
 
       - name: Run Component Tests
         run: npm run test-storybook
         env:
-          SB_URL: "${{ needs.preview.outputs.deployment-url }}"
+          SB_URL: "${{ jobs.needs.preview.outputs.deployment-url }}"
