@@ -87,6 +87,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: storybook-static
+          path: ./storybook-static/
 
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
