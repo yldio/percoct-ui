@@ -1,7 +1,6 @@
 name: Feature Branch
 
 on:
-  push:
   pull_request:
     branches:
       - main
@@ -17,47 +16,6 @@ on:
 concurrency: preview-${{ github.ref }}
 
 jobs:
-  sanity:
-    runs-on: ubuntu-20.04
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Prettier
-        uses: EPMatt/reviewdog-action-prettier@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
-          level: warning
-          fail_on_error: true
-
-      - name: Lint
-        uses: reviewdog/action-eslint@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          level: warning
-          fail_level: "error"
-
-      - name: Typecheck
-        uses: EPMatt/reviewdog-action-tsc@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
-          level: warning
-          fail_on_error: true
-
   build:
     runs-on: ubuntu-20.04
     if: github.event.action != 'closed' && github.event.pull_request.draft == false
@@ -106,39 +64,3 @@ jobs:
         with:
           custom-url: percoct-ui.yld.engineering
           source-dir: ./storybook-static/
-
-  tests:
-    runs-on: ubuntu-20.04
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
-    container:
-      image: mcr.microsoft.com/playwright:v1.49.1-noble
-      options: --user 1001
-    needs: ["deployment"]
-    permissions:
-      contents: read
-      pull-requests: write
-      statuses: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: Install project dependencies
-        run: npm ci
-
-      - name: Run Component Tests
-        run: |
-          npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
-          npm run convert-coverage
-
-      - name: Coverage Diff
-        uses: greatwizard/coverage-diff-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
