@@ -1,7 +1,10 @@
 name: Feature Branch
 
 on:
+  push:
   pull_request:
+    branches:
+      - main
     paths:
       - ".storybook/**"
       - "src/**"
@@ -57,7 +60,7 @@ jobs:
 
   build:
     runs-on: ubuntu-20.04
-    if: github.event.pull_request.draft == false
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -81,17 +84,18 @@ jobs:
 
   deployment:
     runs-on: ubuntu-20.04
-    if: github.event.pull_request.draft == false
     needs: ["build"]
     outputs:
       deployment-url: ${{ steps.preview.outputs.deployment-url }}
     steps:
       - name: Checkout
+        if: github.event.action != 'closed' && github.event.pull_request.draft == false
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: actions/download-artifact@v4
+        if: github.event.action != 'closed' && github.event.pull_request.draft == false
         with:
           name: storybook-static
           path: ./storybook-static/
@@ -105,7 +109,7 @@ jobs:
 
   tests:
     runs-on: ubuntu-20.04
-    if: github.event.pull_request.draft == false
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     container:
       image: mcr.microsoft.com/playwright:v1.49.1-noble
       options: --user 1001
