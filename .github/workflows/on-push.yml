@@ -74,8 +74,8 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     needs: ["build"]
-    outputs:
-      deployment-url: ${{ steps.preview.outputs.deployment-url }}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -87,13 +87,13 @@ jobs:
           name: storybook-static
           path: ./storybook-static/
 
-      - name: Deploy preview
-        uses: rossjrw/pr-preview-action@v1
-        id: "preview"
+      - uses: JamesIves/github-pages-deploy-action@v4
+        name: Deploy preview
         with:
-          custom-url: percoct-ui.yld.engineering
-          source-dir: ./storybook-static/
-          clean-exclude: pr-preview/
+          folder: storybook-static
+          branch: gh-pages
+          clean-exclude: pr-preview
+          force: false
 
   tests:
     runs-on: ubuntu-20.04
