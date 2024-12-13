@@ -2,6 +2,10 @@ name: Push
 
 on:
   push:
+    branches:
+      - main
+
+concurrency: preview-${{ github.ref }}
 
 jobs:
   sanity:
@@ -44,11 +48,59 @@ jobs:
           level: warning
           fail_on_error: true
 
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Build Storybook
+        run: |
+          npm ci
+          npm run build-storybook
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: storybook-static
+          path: storybook-static/
+
+  deployment:
+    runs-on: ubuntu-20.04
+    needs: ["build"]
+    outputs:
+      deployment-url: ${{ steps.preview.outputs.deployment-url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: storybook-static
+          path: ./storybook-static/
+
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        id: "preview"
+        with:
+          custom-url: percoct-ui.yld.engineering
+          source-dir: ./storybook-static/
+          clean-exclude: pr-preview/
+
   tests:
     runs-on: ubuntu-20.04
     container:
       image: mcr.microsoft.com/playwright:v1.49.1-noble
       options: --user 1001
+    needs: ["deployment"]
     permissions:
       contents: read
       pull-requests: write
@@ -69,9 +121,7 @@ jobs:
 
       - name: Run Component Tests
         run: |
-          npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" \
-            "npx http-server storybook-static --port 6006 --silent" \
-            "npx wait-on tcp:127.0.0.1:6006 && npm run test-storybook"
+          npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
           npm run convert-coverage
 
       - name: Coverage Diff
@@ -79,3 +129,4 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
+          base-summary-filename: base-summary.json
