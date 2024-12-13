@@ -13,7 +13,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook --coverage",
-    "convert-coverage": "npx nyc report --reporter=cobertura -t coverage/storybook --report-dir coverage/storybook"
+    "convert-coverage": "npx nyc report --reporter=json-summary -t coverage/storybook --report-dir coverage/storybook"
   },
   "keywords": [],
   "author": "",
