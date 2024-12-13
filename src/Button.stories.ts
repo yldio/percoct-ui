@@ -15,7 +15,12 @@ const Meta: Meta<typeof Button> = {
   tags: ["autodocs"],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
-    backgroundColor: { control: "color" },
+    backgroundColor: {
+      control: {
+        type: "color",
+        presetColors: ["blue", "green", "red"],
+      },
+    },
   },
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
   args: {
@@ -51,7 +56,14 @@ export const Small: Story = {
   },
 };
 
+export const CustomBackgrounColor = {
+  args: {
+    backgroundColor: "red",
+  },
+};
+
 export const TestOnClick: Story = {
+  tags: ["test"],
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
 
