@@ -132,7 +132,7 @@ jobs:
           npm run convert-coverage
 
       - name: Coverage Diff
-        uses: greatwizard/coverage-diff-action@v1
+        uses: Couto/coverage-diff-action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
