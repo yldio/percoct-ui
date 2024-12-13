@@ -74,6 +74,8 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     needs: ["build"]
+    outputs:
+      deployment-url: ${{ steps.preview.outputs.deployment-url }}
     permissions:
       contents: write
     steps:
@@ -89,6 +91,7 @@ jobs:
 
       - uses: JamesIves/github-pages-deploy-action@v4
         name: Deploy preview
+        id: "preview"
         with:
           folder: storybook-static
           branch: gh-pages
@@ -121,7 +124,7 @@ jobs:
 
       - name: Run Component Tests
         run: |
-          npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
+          npm run test-storybook -- --url https://percoct-ui.yld.engineering
           npm run convert-coverage
 
       - name: Coverage Diff
