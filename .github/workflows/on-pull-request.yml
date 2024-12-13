@@ -14,7 +14,7 @@ on:
 concurrency: preview-${{ github.ref }}
 
 jobs:
-  sanity-checks:
+  sanity:
     runs-on: ubuntu-20.04
     if: github.event.action != 'closed' && github.event.pull_request.draft == false
     steps:
@@ -43,7 +43,7 @@ jobs:
         uses: reviewdog/action-eslint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review # Change reporter.
+          reporter: github-pr-review
           level: warning
           fail_level: "error"
 
@@ -55,10 +55,7 @@ jobs:
           level: warning
           fail_on_error: true
 
-      - name: Build Project
-        run: npm run compile
-
-  deploy-preview:
+  build:
     runs-on: ubuntu-20.04
     if: github.event.pull_request.draft == false
     steps:
@@ -77,8 +74,67 @@ jobs:
           npm ci
           npm run build-storybook
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: storybook-static
+          path: storybook-static/
+
+  deployment:
+    runs-on: ubuntu-20.04
+    if: github.event.pull_request.draft == false
+    needs: ["build"]
+    outputs:
+      deployment-url: ${{ steps.preview.outputs.deployment-url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: storybook-static
+          path: ./storybook-static/
+
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
+        id: "preview"
         with:
           custom-url: percoct-ui.yld.engineering
           source-dir: ./storybook-static/
+
+  tests:
+    runs-on: ubuntu-20.04
+    if: github.event.pull_request.draft == false
+    container:
+      image: mcr.microsoft.com/playwright:v1.49.1-noble
+      options: --user 1001
+    needs: ["deployment"]
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Run Component Tests
+        run: |
+          npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
+          npm run convert-coverage
+
+      - name: Coverage Diff
+        uses: greatwizard/coverage-diff-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          coverage-filename: "./coverage/storybook/converted/coverage-summary.json"

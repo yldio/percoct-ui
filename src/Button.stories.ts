@@ -1,9 +1,10 @@
-import { fn } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react";
+import { userEvent, within, expect, fn } from "@storybook/test";
 
 import { Button } from "./Button";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
-export default {
+const Meta: Meta<typeof Button> = {
   title: "Atoms/Button",
   component: Button,
   parameters: {
@@ -17,33 +18,44 @@ export default {
     backgroundColor: { control: "color" },
   },
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-  args: { onClick: fn() },
+  args: {
+    label: "Button",
+    onClick: fn(),
+  },
 };
+
+export default Meta;
+
+type Story = StoryObj<typeof Button>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Primary = {
+export const Primary: Story = {
   args: {
     primary: true,
-    label: "Button",
   },
 };
 
-export const Secondary = {
-  args: {
-    label: "Button",
-  },
+export const Secondary: Story = {
+  args: {},
 };
 
-export const Large = {
+export const Large: Story = {
   args: {
     size: "large",
-    label: "Button",
   },
 };
 
-export const Small = {
+export const Small: Story = {
   args: {
     size: "small",
-    label: "Button",
+  },
+};
+
+export const TestOnClick: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("button"));
+    await expect(args.onClick).toHaveBeenCalled();
   },
 };

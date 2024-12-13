@@ -11,7 +11,9 @@
     "typecheck": "tsc --project ./tsconfig.json --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook --coverage",
+    "convert-coverage": "npx nyc report --reporter=json-summary -t coverage/storybook --report-dir coverage/storybook/converted"
   },
   "keywords": [],
   "author": "",
@@ -20,22 +22,28 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.2",
     "@eslint/js": "^9.16.0",
+    "@storybook/addon-coverage": "^1.0.4",
     "@storybook/addon-essentials": "^8.4.7",
-    "@storybook/addon-interactions": "^8.4.7",
     "@storybook/addon-onboarding": "^8.4.7",
     "@storybook/blocks": "^8.4.7",
+    "@storybook/experimental-addon-test": "^8.4.7",
     "@storybook/react": "^8.4.7",
     "@storybook/react-vite": "^8.4.7",
     "@storybook/test": "^8.4.7",
+    "@storybook/test-runner": "^0.20.1",
+    "@vitest/browser": "^2.1.8",
+    "@vitest/coverage-istanbul": "^2.1.8",
     "eslint": "^9.16.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.13.0",
     "jiti": "^2.4.1",
+    "playwright": "^1.49.1",
     "prettier": "3.4.2",
     "prop-types": "^15.8.1",
     "storybook": "^8.4.7",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.18.0"
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.1.8"
   }
 }
