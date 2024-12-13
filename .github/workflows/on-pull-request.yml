@@ -129,10 +129,9 @@ jobs:
         run: npm ci
 
       - name: Run Component Tests
-        run: npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
-
-      - name: Convert coverage
-        run: npm run convert-coverage
+        run: |
+          npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
+          npm run convert-coverage
 
       - name: Monitor coverage
         uses: slavcodev/coverage-monitor-action@v1
@@ -142,3 +141,9 @@ jobs:
           threshold_alert: 10
           threshold_warning: 50
           threshold_metric: "lines"
+
+      - name: Coverage Diff
+        uses: greatwizard/coverage-diff-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          coverage-filename: "./coverage/storybook/coverage-summary.json"

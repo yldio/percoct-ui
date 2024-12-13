@@ -18,7 +18,6 @@ export default defineConfig({
     coverage: {
       provider: "istanbul", // or 'v8'
       reporter: ["text", "json-summary"],
-      reportsDirectory: "./tests/unit/coverage",
     },
     // Make sure to adjust this pattern to match your stories files.
     include: ["**/*.stories.?(m)[jt]s?(x)"],
