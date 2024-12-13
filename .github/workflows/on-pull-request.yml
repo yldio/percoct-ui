@@ -123,8 +123,8 @@ jobs:
       - name: Install project dependencies
         run: npm ci
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - name: Install Playwright
+        run: npx playwright install chromium --with-deps
 
       - name: Run Component Tests
         run: |
