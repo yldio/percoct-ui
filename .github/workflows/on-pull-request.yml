@@ -137,7 +137,7 @@ jobs:
         uses: slavcodev/coverage-monitor-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          coverage_path: "./coverage/storybook/coverage-summary.json"
+          coverage_path: "./coverage/storybook/converted/coverage-summary.json"
           threshold_alert: 10
           threshold_warning: 50
           threshold_metric: "lines"
@@ -146,4 +146,4 @@ jobs:
         uses: greatwizard/coverage-diff-action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-filename: "./coverage/storybook/coverage-summary.json"
+          coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
