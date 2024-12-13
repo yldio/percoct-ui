@@ -1,19 +1,15 @@
-name: Feature Branch
+name: Push
 
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - closed
+  push:
+    branches:
+      - main
 
 concurrency: preview-${{ github.ref }}
 
 jobs:
   sanity:
     runs-on: ubuntu-20.04
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,7 +50,6 @@ jobs:
 
   build:
     runs-on: ubuntu-20.04
-    if: github.event.pull_request.draft == false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,10 +73,9 @@ jobs:
 
   deployment:
     runs-on: ubuntu-20.04
-    if: github.event.pull_request.draft == false
     needs: ["build"]
-    outputs:
-      deployment-url: ${{ steps.preview.outputs.deployment-url }}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -93,16 +87,16 @@ jobs:
           name: storybook-static
           path: ./storybook-static/
 
-      - name: Deploy preview
-        uses: rossjrw/pr-preview-action@v1
-        id: "preview"
+      - uses: JamesIves/github-pages-deploy-action@v4
+        name: Deploy preview
         with:
-          custom-url: percoct-ui.yld.engineering
-          source-dir: ./storybook-static/
+          folder: storybook-static
+          branch: gh-pages
+          clean-exclude: pr-preview
+          force: false
 
   tests:
     runs-on: ubuntu-20.04
-    if: github.event.pull_request.draft == false
     container:
       image: mcr.microsoft.com/playwright:v1.49.1-noble
       options: --user 1001
@@ -135,3 +129,4 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
+          base-summary-filename: base-summary.json
