@@ -131,8 +131,6 @@ jobs:
       - name: Run Component Tests
         run: npm run test-storybook -- --url ${{ needs.deployment.outputs.deployment-url }}
 
-      - run: tree coverage/
-
       - name: Monitor coverage
         uses: slavcodev/coverage-monitor-action@v1
         with:
