@@ -5,6 +5,8 @@ const coverageConfig: AddonOptionsVite = {
   istanbul: {
     include: ["**/src/*", "**/src/**"],
     exclude: ["**/exampleDirectory/**"],
+    checkProd: false,
+    forceBuildInstrument: true,
   },
 };
 
@@ -27,11 +29,6 @@ const config: StorybookConfig = {
   framework: {
     name: "@storybook/react-vite",
     options: {},
-  },
-  build: {
-    test: {
-      disabledAddons: [],
-    },
   },
   core: {
     disableTelemetry: true,
