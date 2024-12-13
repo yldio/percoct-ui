@@ -12,7 +12,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "test-storybook --coverage"
+    "test-storybook": "test-storybook --coverage",
+    "convert-coverage": "npx nyc report --reporter=cobertura -t coverage/storybook --report-dir coverage/storybook"
   },
   "keywords": [],
   "author": "",
