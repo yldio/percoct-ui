@@ -1,7 +1,7 @@
 import { type StorybookConfig } from "@storybook/react-vite";
-import type { AddonOptionsWebpack } from "@storybook/addon-coverage";
+import type { AddonOptionsVite } from "@storybook/addon-coverage";
 
-const coverageConfig: AddonOptionsWebpack = {
+const coverageConfig: AddonOptionsVite = {
   istanbul: {
     include: ["**/src/*", "**/src/**"],
     exclude: ["**/exampleDirectory/**"],
@@ -27,6 +27,11 @@ const config: StorybookConfig = {
   framework: {
     name: "@storybook/react-vite",
     options: {},
+  },
+  build: {
+    test: {
+      disabledAddons: [],
+    },
   },
   core: {
     disableTelemetry: true,

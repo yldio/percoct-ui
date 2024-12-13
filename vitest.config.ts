@@ -10,7 +10,7 @@ export default defineConfig({
   test: {
     name: "storybook",
     browser: {
-      enabled: true,
+      enabled: false,
       headless: true,
       name: "chromium",
       provider: "playwright",
