@@ -15,10 +15,6 @@ export default defineConfig({
       name: "chromium",
       provider: "playwright",
     },
-    coverage: {
-      provider: "istanbul", // or 'v8'
-      reporter: ["text", "json-summary"],
-    },
     // Make sure to adjust this pattern to match your stories files.
     include: ["**/*.stories.?(m)[jt]s?(x)"],
     setupFiles: [".storybook/vitest.setup.ts"],
