@@ -26,9 +26,9 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     needs: ["build"]
+    environment: github-pages
     outputs:
       environment_url: ${{ steps.preview.outputs.deployment-url }}
-      environment: github-pages
     steps:
       - name: Checkout
         if: github.event.action != 'closed' && github.event.pull_request.draft == false
