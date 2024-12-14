@@ -12,7 +12,7 @@ concurrency: preview-${{ github.ref }}
 
 jobs:
   sanity:
-    uses: .github/workflows/workflow-sanity.yml@main
+    uses: ./.github/workflows/workflow-sanity.yml@main
     secrets: inherit
     if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
