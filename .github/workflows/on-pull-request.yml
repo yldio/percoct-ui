@@ -12,16 +12,16 @@ concurrency: preview-${{ github.ref }}
 
 jobs:
   sanity:
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-sanity.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
   build:
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-build.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
   deployment:
     runs-on: ubuntu-20.04
@@ -52,37 +52,10 @@ jobs:
           source-dir: ./storybook-static/
 
   tests:
-    runs-on: ubuntu-20.04
     if: github.event.action != 'closed' && github.event.pull_request.draft == false
     needs: ["deployment"]
-    permissions:
-      contents: read
-      pull-requests: write
-      statuses: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: Install project dependencies
-        run: npm ci
-
-      - name: Install Playwright
-        run: npx playwright install chromium --with-deps
-
-      - name: Run Component Tests
-        run: |
-          npm run test-storybook -- --url ${{ needs.deployment.outputs.environment_url }}
-          npm run convert-coverage
-
-      - name: Coverage Diff
-        uses: Couto/coverage-diff-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
+    uses: "./.github/workflows/workflow-tests.yml"
+    secrets:
+      repo_token: ${{secrets.GITHUB_TOKEN}}
+    with:
+      storybook_url: ${{ needs.deployment.outputs.environment_url }}
