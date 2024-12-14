@@ -2,6 +2,7 @@ name: Sanity Checks
 
 on:
   workflow_call:
+    inputs: {}
     secrets:
       repo_token:
         required: true
