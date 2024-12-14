@@ -2,6 +2,10 @@ name: Sanity Checks
 
 on:
   workflow_call:
+    inputs:
+    secrets:
+      repo_token:
+        required: true
 
 jobs:
   sanity:
@@ -23,7 +27,7 @@ jobs:
       - name: Prettier
         uses: EPMatt/reviewdog-action-prettier@v1
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.repo_token }}
           reporter: github-pr-review
           level: warning
           fail_on_error: true
@@ -31,7 +35,7 @@ jobs:
       - name: Lint
         uses: reviewdog/action-eslint@v1
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.repo_token }}
           reporter: github-pr-review
           level: warning
           fail_level: "error"
@@ -39,7 +43,7 @@ jobs:
       - name: Typecheck
         uses: EPMatt/reviewdog-action-tsc@v1
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.repo_token }}
           reporter: github-pr-review
           level: warning
           fail_on_error: true

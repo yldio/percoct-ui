@@ -13,7 +13,8 @@ concurrency: preview-${{ github.ref }}
 jobs:
   sanity:
     uses: ./.github/workflows/workflow-sanity.yml
-    secrets: inherit
+    secrets:
+      repo_token: ${{secrets.GITHUB_TOKEN}}
     if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
   build:
