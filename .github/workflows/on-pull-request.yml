@@ -26,6 +26,7 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     needs: ["build"]
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     environment:
       name: github-pages
       url: ${{ steps.preview.outputs.deployment-url }}
@@ -33,13 +34,11 @@ jobs:
       environment_url: ${{ steps.preview.outputs.deployment-url }}
     steps:
       - name: Checkout
-        if: github.event.action != 'closed' && github.event.pull_request.draft == false
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: actions/download-artifact@v4
-        if: github.event.action != 'closed' && github.event.pull_request.draft == false
         with:
           name: storybook-static
           path: ./storybook-static/
