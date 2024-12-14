@@ -2,10 +2,6 @@ name: Sanity Checks
 
 on:
   workflow_call:
-    inputs:
-    secrets:
-      github_token:
-        required: true
 
 jobs:
   sanity:
