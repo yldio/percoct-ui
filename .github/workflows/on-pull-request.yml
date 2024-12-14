@@ -26,6 +26,7 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     needs: ["build"]
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     environment:
       name: github-pages
       url: ${{ steps.preview.outputs.deployment-url }}
@@ -33,13 +34,11 @@ jobs:
       environment_url: ${{ steps.preview.outputs.deployment-url }}
     steps:
       - name: Checkout
-        if: github.event.action != 'closed' && github.event.pull_request.draft == false
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - uses: actions/download-artifact@v4
-        if: github.event.action != 'closed' && github.event.pull_request.draft == false
         with:
           name: storybook-static
           path: ./storybook-static/
@@ -59,3 +58,20 @@ jobs:
       repo_token: ${{secrets.GITHUB_TOKEN}}
     with:
       storybook_url: ${{ needs.deployment.outputs.environment_url }}
+
+  # Remove the deployed Storybook when we close the PR
+  clean-deployment:
+    if: github.event.action == 'closed' && github.event.pull_request.draft == false
+    runs-on: ubuntu-20.04
+    environment:
+      name: github-pages
+      url: ${{ steps.preview.outputs.deployment-url }}
+    outputs:
+      environment_url: ${{ steps.preview.outputs.deployment-url }}
+    steps:
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        id: "preview"
+        with:
+          custom-url: percoct-ui.yld.engineering
+          source-dir: ./storybook-static/
