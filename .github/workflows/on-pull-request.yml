@@ -85,4 +85,4 @@ jobs:
         uses: Couto/coverage-diff-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-filename: "./coverage/storybook/converted/coverage-summary.json"         coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
+          coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
