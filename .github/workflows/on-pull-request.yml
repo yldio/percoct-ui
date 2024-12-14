@@ -18,28 +18,10 @@ jobs:
     if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
   build:
-    runs-on: ubuntu-20.04
+    uses: ./.github/workflows/workflow-build.yml
+    secrets:
+      repo_token: ${{secrets.GITHUB_TOKEN}}
     if: github.event.action != 'closed' && github.event.pull_request.draft == false
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: Build Storybook
-        run: |
-          npm ci
-          npm run build-storybook -- --test
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: storybook-static
-          path: storybook-static/
 
   deployment:
     runs-on: ubuntu-20.04
