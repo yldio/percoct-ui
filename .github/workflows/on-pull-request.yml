@@ -26,7 +26,9 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     needs: ["build"]
-    environment: github-pages
+    environment:
+      name: github-pages
+      url: ${{ steps.preview.outputs.deployment-url }}
     outputs:
       environment_url: ${{ steps.preview.outputs.deployment-url }}
     steps:
