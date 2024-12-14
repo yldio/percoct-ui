@@ -1,4 +1,4 @@
-name: Feature Branch
+name: Feature Branch Closed
 
 on:
   pull_request:
@@ -12,6 +12,11 @@ jobs:
     if: github.event.action == 'closed' && github.event.pull_request.draft == false
     runs-on: ubuntu-20.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
         with:
