@@ -12,17 +12,15 @@ jobs:
     uses: ./.github/workflows/workflow-sanity.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
   build:
     uses: ./.github/workflows/workflow-build.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
   deployment:
     runs-on: ubuntu-20.04
-    needs: ["build"]
+    needs: ["sanity", "build"]
     outputs:
       environment_url: https://percoct-ui.yld.engineering
     environment:

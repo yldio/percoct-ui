@@ -12,16 +12,16 @@ concurrency: preview-${{ github.ref }}
 
 jobs:
   sanity:
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-sanity.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
   build:
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-build.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
 
   deployment:
     runs-on: ubuntu-20.04
