@@ -51,37 +51,9 @@ jobs:
           force: false
 
   tests:
-    runs-on: ubuntu-20.04
     needs: ["deployment"]
-    permissions:
-      contents: write
-      pull-requests: write
-      statuses: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: Install project dependencies
-        run: npm ci
-
-      - name: Install Playwright
-        run: npx playwright install chromium --with-deps
-
-      - name: Run Component Tests
-        run: |
-          npm run test-storybook -- --url ${{ needs.deployment.outputs.environment_url }}
-          npm run convert-coverage
-
-      - name: Coverage Diff
-        uses: Couto/coverage-diff-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-filename: "./coverage/storybook/converted/coverage-summary.json"
-          base-summary-filename: base-summary.json
+    uses: "./.github/workflows/workflow-tests.yml"
+    secrets:
+      repo_token: ${{secrets.GITHUB_TOKEN}}
+    with:
+      storybook_url: ${{ needs.deployment.outputs.environment_url }}
