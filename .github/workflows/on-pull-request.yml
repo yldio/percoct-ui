@@ -57,16 +57,3 @@ jobs:
       repo_token: ${{secrets.GITHUB_TOKEN}}
     with:
       storybook_url: ${{ needs.deployment.outputs.environment_url }}
-
-  release-preview:
-    name: Release Preview
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Release
-        uses: huggingface/semver-release-action@v1.1.0
-        with:
-          dryRun: true
