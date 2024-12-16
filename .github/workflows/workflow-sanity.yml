@@ -23,7 +23,6 @@ jobs:
 
       - name: Install dependencies
         uses: "./.github/workflows/workflow-install.yml"
-        run: npm ci
 
       - name: Prettier
         uses: EPMatt/reviewdog-action-prettier@v1
