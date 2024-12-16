@@ -57,3 +57,17 @@ jobs:
       repo_token: ${{secrets.GITHUB_TOKEN}}
     with:
       storybook_url: ${{ needs.deployment.outputs.environment_url }}
+
+  preview-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git fetch --prune --unshallow --tags
+
+      - uses: snyk/release-notes-preview@v1.6.1
+        with:
+          releaseBranch: main
+        env:
+          GITHUB_PR_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
