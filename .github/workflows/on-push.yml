@@ -70,5 +70,7 @@ jobs:
 
       - name: Release
         uses: huggingface/semver-release-action@v1.1.0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           dryRun: true
