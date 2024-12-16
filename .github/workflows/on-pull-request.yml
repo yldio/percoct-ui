@@ -11,21 +11,21 @@ concurrency: preview-${{ github.ref }}
 
 jobs:
   sanity:
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-sanity.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
   build:
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-build.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
   deployment:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-20.04
     needs: ["build"]
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
     environment:
       name: github-pages
       url: ${{ steps.preview.outputs.deployment-url }}
@@ -50,7 +50,7 @@ jobs:
           source-dir: ./storybook-static/
 
   tests:
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false
     needs: ["deployment"]
     uses: "./.github/workflows/workflow-tests.yml"
     secrets:
