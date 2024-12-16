@@ -22,6 +22,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
+        uses: "./.github/workflows/workflow-install.yml"
         run: npm ci
 
       - name: Verify dependencies provenance
