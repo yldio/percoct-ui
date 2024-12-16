@@ -16,7 +16,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: "./.github/actions/install-dependencies"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify dependencies provenance
+        run: npm audit signatures
 
       - name: Verify dependencies provenance
         run: npm audit signatures
