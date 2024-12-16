@@ -27,11 +27,14 @@ jobs:
       - name: Verify dependencies provenance
         run: npm audit signatures
 
+      - name: Verify dependencies provenance
+        run: npm audit signatures
+
       - name: Prettier
         uses: EPMatt/reviewdog-action-prettier@v1
         with:
           github_token: ${{ secrets.repo_token }}
-          reporter: github-pr-review
+          reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
           level: warning
           fail_on_error: true
 
@@ -39,7 +42,7 @@ jobs:
         uses: reviewdog/action-eslint@v1
         with:
           github_token: ${{ secrets.repo_token }}
-          reporter: github-pr-review
+          reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
           level: warning
           fail_level: "error"
 
@@ -47,6 +50,6 @@ jobs:
         uses: EPMatt/reviewdog-action-tsc@v1
         with:
           github_token: ${{ secrets.repo_token }}
-          reporter: github-pr-review
+          reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
           level: warning
           fail_on_error: true
