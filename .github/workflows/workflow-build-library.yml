@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    outputs:
+      manifest: ${{steps.pack.outputs.manifest}}
+      tarball: ${{steps.pack.outputs.tarball}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,14 +30,41 @@ jobs:
         run: npm run build
 
       - name: Pack library
+        id: pack
         run: |
           npm pack
           npm pack --json > manifest.json
-          echo "MANIFEST=$(jq -c . < manifest.json)" >> $GITHUB_ENV
+          echo "manifest=$(jq -c . < manifest.json)" >> $GITHUB_OUTPUT
+          echo "tarball=$(jq -r '.[0].filename' < manifest.json)" >> $GITHUB_OUTPUT
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{fromJson(env.MANIFEST)[0].filename}}
+          name: ${{steps.pack.outputs.tarball}}
           path: |
             manifest.json
-            ${{fromJson(env.MANIFEST)[0].filename}}
+            ${{steps.pack.outputs.tarball}}
+
+  test:
+    needs: ["build"]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{needs.build.outputs.tarball}}
+          path: "./"
+
+      - name: Setup NPM Project
+        run: npm init -y
+
+      - name: Install Library and Peer Dependencies
+        run: npm install -S react ${{needs.build.outputs.tarball}}
+
+      - run: ls -la
+      - run: ls -la node_modules
+
+      - name: Smoke Test import
+        run: |
+          echo "import { Button } from '@yldio/percoct-ui'" > index.mjs
+          echo "const { Button } = require('@yldio/percoct-ui')" > index.js
+          node index.mjs
+          node index.js

@@ -21,8 +21,8 @@
     "type": "git",
     "url": "git+https://github.com/yldio/percoct-ui.git"
   },
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "type": "module",
   "files": [
@@ -69,6 +69,7 @@
     "prettier": "3.4.2",
     "prop-types": "^15.8.1",
     "rollup": "^4.28.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "storybook": "^8.4.7",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.0",
