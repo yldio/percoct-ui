@@ -8,7 +8,7 @@ on:
         required: true
 
 jobs:
-  sanity:
+  prettier:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -27,12 +27,6 @@ jobs:
       - name: Verify dependencies provenance
         run: npm audit signatures
 
-      - name: Verify dependencies provenance
-        run: npm audit signatures
-
-      - name: Verify dependencies provenance
-        run: npm audit signatures
-
       - name: Prettier
         uses: EPMatt/reviewdog-action-prettier@v1
         with:
@@ -41,6 +35,25 @@ jobs:
           level: warning
           fail_on_error: true
 
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify dependencies provenance
+        run: npm audit signatures
+
       - name: Lint
         uses: reviewdog/action-eslint@v1
         with:
@@ -48,6 +61,25 @@ jobs:
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
           level: warning
           fail_level: "error"
+
+  typescript:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify dependencies provenance
+        run: npm audit signatures
 
       - name: Typecheck
         uses: EPMatt/reviewdog-action-tsc@v1
