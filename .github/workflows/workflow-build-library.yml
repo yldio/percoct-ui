@@ -54,12 +54,14 @@ jobs:
           name: ${{steps.build-library.outputs.tarball}}
           path: "./"
 
-      - run: ls -la
-
       - name: Setup NPM Project
-        run: |
-          npm init -y
-          npm install -S ${{steps.build-library.outputs.tarball}}
+        run: npm init -y
+
+      - name: Install Library
+        run: npm install -S ${{steps.build-library.outputs.tarball}}
+
+      - run: ls -la
+      - run: ls -la node_modules
 
       - name: Test Library import
         run: |
