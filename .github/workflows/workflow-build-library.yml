@@ -33,16 +33,11 @@ jobs:
 
       - name: Read manifest
         id: pack
-        run: |
-          content=`cat ./manifest.json`
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          echo "::set-output name=manifest::$content"
+        run: echo "MANIFEST=$(jq -c . < manifest.json)" >> $GITHUB_ENV
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{fromJson(steps.pack.outputs.manifest).filename}}
+          name: ${{fromJson(env.MANIFEST).filename}}
           path: |
             manifest.json
-            ${{fromJson(steps.pack.outputs.manifest).filename}}
+            ${{fromJson(env.MANIFEST).filename}}
