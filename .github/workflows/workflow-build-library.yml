@@ -40,4 +40,4 @@ jobs:
           name: ${{fromJson(env.MANIFEST).filename}}
           path: |
             manifest.json
-            ${{fromJson(env.MANIFEST).filename}}
+            ${{fromJson(env.MANIFEST)[0].filename}}
