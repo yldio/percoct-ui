@@ -57,13 +57,15 @@ jobs:
       - name: Setup NPM Project
         run: npm init -y
 
-      - name: Install Library
-        run: npm install -S ${{steps.build-library.outputs.tarball}}
+      - name: Install Library and Peer Dependencies
+        run: npm install -S react ${{steps.build-library.outputs.tarball}}
 
       - run: ls -la
       - run: ls -la node_modules
 
-      - name: Test Library import
+      - name: Smoke Test import
         run: |
-          echo "import { Button } from '@yldio/percoct-ui'" > index.js
+          echo "import { Button } from '@yldio/percoct-ui'" > index.mjs
+          echo "const { Button } = require('@yldio/percoct-ui')" > index.js
+          node index.mjs
           node index.js
