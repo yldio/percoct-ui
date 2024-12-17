@@ -51,14 +51,14 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: ${{steps.build-library.outputs.tarball}}
+          name: ${{steps.build.outputs.tarball}}
           path: "./"
 
       - name: Setup NPM Project
         run: npm init -y
 
       - name: Install Library and Peer Dependencies
-        run: npm install -S react ${{steps.build-library.outputs.tarball}}
+        run: npm install -S react ${{steps.build.outputs.tarball}}
 
       - run: ls -la
       - run: ls -la node_modules
