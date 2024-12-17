@@ -1,4 +1,4 @@
-name: Build
+name: Build Storybook
 
 on:
   workflow_call:

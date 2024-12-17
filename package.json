@@ -1,11 +1,19 @@
 {
-  "name": "percoct-ui",
+  "name": "@yldio/percoct-ui",
   "version": "0.0.0",
-  "keywords": [],
+  "keywords": [
+    "react",
+    "javascript",
+    "design",
+    "library",
+    "typescript",
+    "ui",
+    "system"
+  ],
   "author": "Luis Couto <couto@yld.io>",
   "contributors": [],
   "license": "UNLICENSED",
-  "description": "",
+  "description": "YLD.io's UI Library. Following the YLD.io's design system.",
   "publishConfig": {
     "provenance": true
   },
@@ -17,6 +25,9 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "format-check": "prettier . --check",
     "format": "prettier . --write",

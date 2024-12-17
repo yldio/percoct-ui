@@ -30,6 +30,9 @@ jobs:
       - name: Verify dependencies provenance
         run: npm audit signatures
 
+      - name: Verify dependencies provenance
+        run: npm audit signatures
+
       - name: Prettier
         uses: EPMatt/reviewdog-action-prettier@v1
         with:

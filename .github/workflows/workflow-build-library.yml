@@ -1,0 +1,40 @@
+name: Build Library
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify dependencies provenance
+        run: npm audit signatures
+
+      - name: Build Library
+        run: npm run build
+
+      - name: Pack library
+        run: |
+          npm pack
+          npm pack --json > manifest.json
+          echo "MANIFEST=$(jq -c . < manifest.json)" >> $GITHUB_ENV
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{fromJson(env.MANIFEST)[0].filename}}
+          path: |
+            manifest.json
+            ${{fromJson(env.MANIFEST)[0].filename}}
