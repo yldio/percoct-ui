@@ -1,4 +1,4 @@
-name: Build
+name: Build Library
 
 on:
   workflow_call:
@@ -30,10 +30,7 @@ jobs:
         run: |
           npm pack
           npm pack --json > manifest.json
-
-      - name: Read manifest
-        id: pack
-        run: echo "MANIFEST=$(jq -c . < manifest.json)" >> $GITHUB_ENV
+          echo "MANIFEST=$(jq -c . < manifest.json)" >> $GITHUB_ENV
 
       - uses: actions/upload-artifact@v4
         with:

@@ -13,14 +13,17 @@ jobs:
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
-  build:
+  build-storybook:
     uses: ./.github/workflows/workflow-build.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
+  build-library:
+    uses: ./.github/workflows/workflow-build-library.yml
+
   deployment:
     runs-on: ubuntu-20.04
-    needs: ["sanity", "build"]
+    needs: ["sanity", "build-storybook", "build-library"]
     outputs:
       environment_url: https://percoct-ui.yld.engineering
     environment:
@@ -72,5 +75,3 @@ jobs:
         uses: huggingface/semver-release-action@v1.1.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          dryRun: true
