@@ -43,3 +43,25 @@ jobs:
           path: |
             manifest.json
             ${{steps.pack.outputs.tarball}}
+
+  test:
+    if: github.event.pull_request.draft == false
+    needs: ["build"]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{steps.build-library.outputs.tarball}}
+          path: "./"
+
+      - run: ls -la
+
+      - name: Setup NPM Project
+        run: |
+          npm init -y
+          npm install -S ${{steps.build-library.outputs.tarball}}
+
+      - name: Test Library import
+        run: |
+          echo "import { Button } from '@yldio/percoct-ui'" > index.js
+          node index.js
