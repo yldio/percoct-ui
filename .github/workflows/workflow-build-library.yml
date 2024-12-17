@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    outputs:
+      manifest: ${{ steps.pack.outputs.manifest }}
+      tarball: ${{steps.pack.outputs.tarball}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,14 +30,16 @@ jobs:
         run: npm run build
 
       - name: Pack library
+        id: pack
         run: |
           npm pack
           npm pack --json > manifest.json
-          echo "MANIFEST=$(jq -c . < manifest.json)" >> $GITHUB_ENV
+          echo "manifest=$(jq -c . < manifest.json)" >> $GITHUB_OUTPUT
+          echo "tarball=$(jq '.[0].filename' < manifest.json)" >> $GITHUB_OUTPUT
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{fromJson(env.MANIFEST)[0].filename}}
+          name: ${{steps.pack.outputs.tarball}}
           path: |
             manifest.json
-            ${{fromJson(env.MANIFEST)[0].filename}}
+            ${{steps.pack.outputs.tarball}}
