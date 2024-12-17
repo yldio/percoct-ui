@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     outputs:
-      manifest: ${{ steps.pack.outputs.manifest }}
+      manifest: ${{steps.pack.outputs.manifest}}
       tarball: ${{steps.pack.outputs.tarball}}
     steps:
       - name: Checkout
@@ -45,20 +45,19 @@ jobs:
             ${{steps.pack.outputs.tarball}}
 
   test:
-    if: github.event.pull_request.draft == false
     needs: ["build"]
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: ${{job.build.outputs.tarball}}
+          name: ${{needs.build.outputs.tarball}}
           path: "./"
 
       - name: Setup NPM Project
         run: npm init -y
 
       - name: Install Library and Peer Dependencies
-        run: npm install -S ${{job.build.outputs.tarball}} react
+        run: npm install -S react ${{needs.build.outputs.tarball}}
 
       - run: ls -la
       - run: ls -la node_modules
