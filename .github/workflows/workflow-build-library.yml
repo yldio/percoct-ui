@@ -37,7 +37,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{fromJson(env.MANIFEST).filename}}
+          name: ${{fromJson(env.MANIFEST)[0].filename}}
           path: |
             manifest.json
             ${{fromJson(env.MANIFEST)[0].filename}}
