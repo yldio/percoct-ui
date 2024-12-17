@@ -60,18 +60,8 @@ jobs:
       storybook_url: ${{ needs.deployment.outputs.environment_url }}
 
   release:
-    name: Release
-    runs-on: ubuntu-20.04
     needs: ["tests"]
-    permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Release
-        uses: huggingface/semver-release-action@v1.1.0
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: "./.github/workflows/workflow-tests.yml"
+    secrets:
+      repo_token: ${{secrets.GITHUB_TOKEN}}
+      npm_token: ${{secrets.NPM_TOKEN}}
