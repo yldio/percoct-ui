@@ -1,0 +1,52 @@
+name: Build
+
+on:
+  workflow_call:
+    inputs: {}
+    secrets:
+      repo_token:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify dependencies provenance
+        run: npm audit signatures
+
+      - name: Build Library
+        run: npm run build
+
+      - name: Pack library
+        run: |
+          npm pack
+          npm pack --json > manifest.json
+
+      - name: Read manifest
+        id: pack
+        run: |
+          content=`cat ./manifest.json`
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=manifest::$content"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{fromJson(steps.pack.outputs.manifest).filename}}
+          path: |
+            manifest.json
+            ${{fromJson(steps.pack.outputs.manifest).filename}}

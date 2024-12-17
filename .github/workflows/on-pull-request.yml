@@ -16,16 +16,20 @@ jobs:
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
-  build:
+  build-library:
     if: github.event.pull_request.draft == false
-    uses: ./.github/workflows/workflow-build.yml
+    uses: ./.github/workflows/workflow-build-library.yml
+
+  build-storybook:
+    if: github.event.pull_request.draft == false
+    uses: ./.github/workflows/workflow-build-storybook.yml
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
   deployment:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-20.04
-    needs: ["build"]
+    needs: ["build-storybook"]
     environment:
       name: github-pages
       url: ${{ steps.preview.outputs.deployment-url }}
