@@ -61,7 +61,7 @@ jobs:
 
   release:
     needs: ["tests"]
-    uses: "./.github/workflows/workflow-tests.yml"
+    uses: "./.github/workflows/workflow-release.yml"
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
       npm_token: ${{secrets.NPM_TOKEN}}
