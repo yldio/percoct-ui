@@ -2,10 +2,6 @@ name: Build
 
 on:
   workflow_call:
-    inputs: {}
-    secrets:
-      repo_token:
-        required: true
 
 jobs:
   build:
