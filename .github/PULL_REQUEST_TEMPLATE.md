@@ -5,7 +5,3 @@
 ## Reason
 
 <!-- Describe what and why these changes were necessary -->
-
----
-
-<!-- Auto-generated section. DO NOT DELETE -->
