@@ -15,7 +15,7 @@ export const Button = ({
   ...props
 }: Props) => {
   const mode = primary
-    ? "storybook-button--primary"
+    ? "storybook-button--primary-test"
     : "storybook-button--secondary";
 
   return (
