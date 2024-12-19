@@ -3,12 +3,19 @@ name: Build Library
 on:
   workflow_call:
 
+permissions:
+  id-token: write # to enable use of OIDC for npm provenance
+  attestations: write
+  actions: read
+  contents: read
+  pull-requests: read
+
 jobs:
   build:
     runs-on: ubuntu-20.04
     outputs:
-      manifest: ${{steps.pack.outputs.manifest}}
-      tarball: ${{steps.pack.outputs.tarball}}
+      manifest_name: ${{steps.tarball.outputs.manifest_name}}
+      tarball_name: ${{steps.tarball.outputs.tarball_name}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,23 +33,57 @@ jobs:
       - name: Verify dependencies provenance
         run: npm audit signatures
 
+      - name: Determine next version
+        id: next-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.repo_token }}
+          IS_PR: ${{ github.event.pull_request != null }}
+        run: |
+          NEXT_VERSION=$(npx semantic-release --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || echo '')
+          if [ -n "$NEXT_VERSION" ]; then
+            if [ "$IS_PR" = "true" ]; then
+              NEXT_VERSION="${NEXT_VERSION}-dev"
+            fi
+            echo "Next version will be: $NEXT_VERSION"
+            echo "version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "No new version to be released"
+            echo "version=none" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build Library
         run: npm run build
 
-      - name: Pack library
-        id: pack
+      - name: Set new version
+        if: steps.next-version.outputs.version != 'none'
+        run: npm version ${{ steps.next-version.outputs.version }} --no-git-tag-version
+
+      - name: Generate tarball with next version
+        id: tarball
         run: |
           npm pack
-          npm pack --json > manifest.json
-          echo "manifest=$(jq -c . < manifest.json)" >> $GITHUB_OUTPUT
-          echo "tarball=$(jq -r '.[0].filename' < manifest.json)" >> $GITHUB_OUTPUT
+          echo "TARBALL_NAME=$(ls *.tgz)" >> $GITHUB_OUTPUT
 
-      - uses: actions/upload-artifact@v4
+          npm pack --json > manifest.json
+          echo "MANIFEST_NAME=manifest.json" >> $GITHUB_OUTPUT
+          git checkout package.json package-lock.json
+
+      - name: Generate build provenance
+        id: provenance
+        uses: actions/attest-build-provenance@v2
         with:
-          name: ${{steps.pack.outputs.tarball}}
+          subject-path: ${{ steps.tarball.outputs.tarball_name }}
+
+      - run: cp ${{steps.provenance.outputs.bundle-path}} ./attestation.json
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-with-attestation
           path: |
-            manifest.json
-            ${{steps.pack.outputs.tarball}}
+            ${{ steps.tarball.outputs.manifest_name}}
+            ${{ steps.tarball.outputs.tarball_name }}
+            attestation.json
 
   test:
     needs: ["build"]
@@ -50,14 +91,14 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: ${{needs.build.outputs.tarball}}
+          name: package-with-attestation
           path: "./"
 
       - name: Setup NPM Project
         run: npm init -y
 
       - name: Install Library and Peer Dependencies
-        run: npm install -S react ${{needs.build.outputs.tarball}}
+        run: npm install -S react ${{needs.build.outputs.tarball_name}}
 
       - run: ls -la
       - run: ls -la node_modules
