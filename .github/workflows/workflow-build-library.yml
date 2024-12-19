@@ -14,8 +14,8 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     outputs:
-      manifest_name: ${{steps.pack.outputs.manifest_name}}
-      tarball_name: ${{steps.pack.outputs.tarball_name}}
+      manifest_name: ${{steps.tarball.outputs.manifest_name}}
+      tarball_name: ${{steps.tarball.outputs.tarball_name}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
