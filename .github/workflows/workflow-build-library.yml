@@ -7,6 +7,8 @@ permissions:
   id-token: write # to enable use of OIDC for npm provenance
   attestations: write
   actions: read
+  contents: read
+  pull-requests: read
 
 jobs:
   build:
@@ -52,16 +54,18 @@ jobs:
       - name: Build Library
         run: npm run build
 
+      - name: Set new version
+        if: steps.next-version.outputs.version != 'none'
+        run: npm version ${{ steps.next-version.outputs.version }} --no-git-tag-version
+
       - name: Generate tarball with next version
         if: steps.next-version.outputs.version != 'none'
         id: tarball
         run: |
-          npm version ${{ steps.next-version.outputs.version }} --no-git-tag-version
           npm pack
           echo "TARBALL_NAME=$(ls *.tgz)" >> $GITHUB_OUTPUT
 
           npm pack --json > manifest.json
-          echo "MANIFEST=$(jq -c . < manifest.json)" >> $GITHUB_OUTPUT
           echo "MANIFEST_NAME=manifest.json" >> $GITHUB_OUTPUT
           git checkout package.json package-lock.json
 
