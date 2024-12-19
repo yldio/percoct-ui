@@ -14,8 +14,8 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     outputs:
-      manifest: ${{steps.pack.outputs.manifest}}
-      tarball: ${{steps.pack.outputs.tarball}}
+      manifest_name: ${{steps.pack.outputs.manifest_name}}
+      tarball_name: ${{steps.pack.outputs.tarball_name}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,7 +75,7 @@ jobs:
           subject-path: ${{ github.workspace }}/${{ steps.tarball.outputs.tarball_name }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: package-with-attestation
           path: |
@@ -89,14 +89,14 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: ${{needs.build.outputs.tarball}}
+          name: package-with-attestation
           path: "./"
 
       - name: Setup NPM Project
         run: npm init -y
 
       - name: Install Library and Peer Dependencies
-        run: npm install -S react ${{needs.build.outputs.tarball}}
+        run: npm install -S react ${{needs.build.outputs.tarball_name}}
 
       - run: ls -la
       - run: ls -la node_modules
