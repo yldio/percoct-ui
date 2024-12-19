@@ -59,7 +59,6 @@ jobs:
         run: npm version ${{ steps.next-version.outputs.version }} --no-git-tag-version
 
       - name: Generate tarball with next version
-        if: steps.next-version.outputs.version != 'none'
         id: tarball
         run: |
           npm pack
@@ -71,13 +70,11 @@ jobs:
 
       - name: Generate build provenance
         id: provenance
-        if: steps.next-version.outputs.version != 'none'
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: ${{ github.workspace }}/${{ steps.tarball.outputs.tarball_name }}
 
       - name: Upload artifacts
-        if: steps.next-version.outputs.version != 'none'
         uses: actions/upload-artifact@v3
         with:
           name: package-with-attestation
