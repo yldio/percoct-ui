@@ -72,7 +72,9 @@ jobs:
         id: provenance
         uses: actions/attest-build-provenance@v2
         with:
-          subject-path: ${{ github.workspace }}/${{ steps.tarball.outputs.tarball_name }}
+          subject-path: ${{ steps.tarball.outputs.tarball_name }}
+
+      - run: cp ${{steps.provenance.outputs.bundle-path}} ./attestation.json
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -81,7 +83,7 @@ jobs:
           path: |
             ${{ steps.tarball.outputs.manifest_name}}
             ${{ steps.tarball.outputs.tarball_name }}
-            ${{ steps.provenance.outputs.bundle-path }}
+            attestation.json
 
   test:
     needs: ["build"]
