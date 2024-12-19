@@ -67,7 +67,6 @@ jobs:
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: ${{ github.workspace }}/${{ steps.tarball.outputs.tarball_name }}
-          push-to-registry: true
 
       - name: Upload artifacts
         if: steps.next-version.outputs.version != 'none'
