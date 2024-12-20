@@ -33,6 +33,8 @@ jobs:
 
   CLAAssistant:
     runs-on: ubuntu-latest
+    # clean-deployment needs to run first because it will post/edit a comment on the PR
+    needs: ["clean-deployment"]
     steps:
       - name: "CLA Assistant"
         if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
