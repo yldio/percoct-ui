@@ -20,6 +20,8 @@ jobs:
 
   build-library:
     uses: ./.github/workflows/workflow-build-library.yml
+    secrets:
+      repo_token: ${{secrets.GITHUB_TOKEN}}
 
   deployment:
     runs-on: ubuntu-20.04
