@@ -69,43 +69,108 @@ jobs:
           git checkout package.json package-lock.json
 
       - name: Generate build provenance
+        if: steps.next-version.outputs.version != 'none'
         id: provenance
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: ${{ steps.tarball.outputs.tarball_name }}
 
-      - run: cp ${{steps.provenance.outputs.bundle-path}} ./attestation.json
+      - name: Copy attestation file
+        if: steps.next-version.outputs.version != 'none'
+        run: cp ${{steps.provenance.outputs.bundle-path}} ./attestation.json
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: package-with-attestation
+          name: npm-package-artifacts
           path: |
             ${{ steps.tarball.outputs.manifest_name}}
             ${{ steps.tarball.outputs.tarball_name }}
-            attestation.json
+            ${{ steps.next-version.outputs.version != 'none' && 'attestation.json' || '' }}
 
   test:
     needs: ["build"]
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [18, 20]
+    name: Test Node ${{ matrix.node-version }}
     steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
       - uses: actions/download-artifact@v4
         with:
-          name: package-with-attestation
+          name: npm-package-artifacts
           path: "./"
 
-      - name: Setup NPM Project
-        run: npm init -y
-
-      - name: Install Library and Peer Dependencies
-        run: npm install -S react ${{needs.build.outputs.tarball_name}}
-
-      - run: ls -la
-      - run: ls -la node_modules
-
-      - name: Smoke Test import
+      - name: Setup test project
         run: |
-          echo "import { Button } from '@yldio/percoct-ui'" > index.mjs
-          echo "const { Button } = require('@yldio/percoct-ui')" > index.js
-          node index.mjs
-          node index.js
+          # Create package.json with proper type module
+          cat << EOF > package.json
+          {
+            "name": "package-test",
+            "private": true,
+            "type": "module",
+            "engines": {
+              "node": ">=18"
+            }
+          }
+          EOF
+
+      - name: Install dependencies
+        run: |
+          # Install all peer dependencies from the package
+          PEER_DEPS="react"
+          echo "Installing peer dependencies: $PEER_DEPS"
+          npm install -S $PEER_DEPS
+
+          # Install the package itself
+          npm install -S ./${{needs.build.outputs.tarball_name}}
+
+      - name: Create test files
+        run: |
+          # ESM test file
+          cat << 'EOF' > test-esm.mjs
+          import * as lib from '@yldio/percoct-ui';
+
+          // List of expected exports
+          const EXPECTED_EXPORTS = ['Button'];
+
+          // Verify all expected exports exist
+          for (const exp of EXPECTED_EXPORTS) {
+            if (!lib[exp]) throw new Error(`Export "${exp}" not found`);
+            console.log(`✓ Found export: ${exp}`);
+          }
+
+          // Log all available exports for reference
+          console.log('\nAll available exports:', Object.keys(lib));
+          console.log('✓ ESM import test successful');
+          EOF
+
+          # CommonJS test file
+          cat << 'EOF' > test-cjs.cjs
+          const lib = require('@yldio/percoct-ui');
+
+          // List of expected exports
+          const EXPECTED_EXPORTS = ['Button'];
+
+          // Verify all expected exports exist
+          for (const exp of EXPECTED_EXPORTS) {
+            if (!lib[exp]) throw new Error(`Export "${exp}" not found`);
+            console.log(`✓ Found export: ${exp}`);
+          }
+
+          // Log all available exports for reference
+          console.log('\nAll available exports:', Object.keys(lib));
+          console.log('✓ CommonJS import test successful');
+          EOF
+
+      - name: Run import tests
+        run: |
+          echo "🧪 Testing ESM imports..."
+          node test-esm.mjs
+
+          echo -e "\n🧪 Testing CommonJS imports..."
+          node test-cjs.cjs
