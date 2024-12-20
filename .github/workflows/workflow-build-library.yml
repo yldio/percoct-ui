@@ -6,6 +6,8 @@ on:
     secrets:
       repo_token:
         required: true
+      npm_token:
+        required: true
 
 permissions:
   attestations: write
@@ -42,6 +44,7 @@ jobs:
         id: next-version
         env:
           GITHUB_TOKEN: ${{ secrets.repo_token }}
+          NPM_TOKEN: ${{ secrets.npm_token }}
         run: |
           NEXT_VERSION=$(npx semantic-release --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || echo '')
           if [ -n "$NEXT_VERSION" ]; then
