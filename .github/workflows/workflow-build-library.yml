@@ -122,7 +122,7 @@ jobs:
       - name: Install dependencies
         run: |
           # Install all peer dependencies from the package
-          PEER_DEPS=$(node -p "JSON.parse(require('fs').readFileSync('manifest.json')).peerDependencies || {}")
+          PEER_DEPS="react"
           echo "Installing peer dependencies: $PEER_DEPS"
           npm install -S $PEER_DEPS
 
