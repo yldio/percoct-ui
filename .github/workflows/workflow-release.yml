@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload artifacts
         if: steps.next-version.outputs.version != 'none'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: package-with-attestation
           path: |
