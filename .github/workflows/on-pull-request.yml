@@ -19,6 +19,8 @@ jobs:
   build-library:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-build-library.yml
+    secrets:
+      repo_token: ${{secrets.GITHUB_TOKEN}}
 
   build-storybook:
     if: github.event.pull_request.draft == false

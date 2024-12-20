@@ -2,6 +2,10 @@ name: Build Library
 
 on:
   workflow_call:
+    inputs: {}
+    secrets:
+      repo_token:
+        required: true
 
 permissions:
   id-token: write # to enable use of OIDC for npm provenance
@@ -37,13 +41,9 @@ jobs:
         id: next-version
         env:
           GITHUB_TOKEN: ${{ secrets.repo_token }}
-          IS_PR: ${{ github.event.pull_request != null }}
         run: |
           NEXT_VERSION=$(npx semantic-release --dry-run | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || echo '')
           if [ -n "$NEXT_VERSION" ]; then
-            if [ "$IS_PR" = "true" ]; then
-              NEXT_VERSION="${NEXT_VERSION}-dev"
-            fi
             echo "Next version will be: $NEXT_VERSION"
             echo "version=$NEXT_VERSION" >> $GITHUB_OUTPUT
           else
