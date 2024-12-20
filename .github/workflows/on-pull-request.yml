@@ -27,7 +27,7 @@ jobs:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
   deployment:
-    if: github.event.pull_request.draft == false
+    if: github.actor != 'dependabot[bot]' && github.event.pull_request.draft == false
     runs-on: ubuntu-20.04
     needs: ["build-storybook"]
     environment:
@@ -54,7 +54,7 @@ jobs:
           source-dir: ./storybook-static/
 
   tests:
-    if: github.event.pull_request.draft == false
+    if: github.actor != 'dependabot[bot]' && github.event.pull_request.draft == false
     needs: ["deployment"]
     uses: "./.github/workflows/workflow-tests.yml"
     secrets:
