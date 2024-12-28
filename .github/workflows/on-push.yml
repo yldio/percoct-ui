@@ -23,6 +23,7 @@ jobs:
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
       npm_token: ${{secrets.NPM_TOKEN}}
+      artifact_name: "npm-package-artifact"
 
   deployment:
     runs-on: ubuntu-20.04
@@ -68,3 +69,4 @@ jobs:
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
       npm_token: ${{secrets.NPM_TOKEN}}
+      artifact_name: npm-package-artifact
