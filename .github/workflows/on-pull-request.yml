@@ -22,6 +22,7 @@ jobs:
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
       npm_token: ${{secrets.NPM_TOKEN}}
+    with:
       artifact_name: "npm-package-artifact"
 
   build-storybook:
