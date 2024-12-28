@@ -8,7 +8,18 @@ export default {
         assets: [
           {
             path: "yldio-percoct-ui-**.tgz",
-            label: "Files being published",
+            name: "Percoct-UI-${nextRelease.gitTag}",
+            label: "Percoct-UI (${nextRelease.gitTag}) Distribution",
+          },
+          {
+            path: "manifest.json",
+            name: "Percoct-UI-${nextRelease.gitTag} Manifest",
+            label: "Percoct-UI (${nextRelease.gitTag}) Manifest",
+          },
+          {
+            path: "attestation.json",
+            name: "Percoct-UI-${nextRelease.gitTag} Attestation",
+            label: "Percoct-UI (${nextRelease.gitTag}) Attestation",
           },
         ],
       },
