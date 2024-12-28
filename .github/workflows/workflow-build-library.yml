@@ -2,7 +2,10 @@ name: Build Library
 
 on:
   workflow_call:
-    inputs: {}
+    inputs:
+      artifact_name:
+        type: string
+        required: true
     secrets:
       repo_token:
         required: true
@@ -86,7 +89,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: npm-package-artifacts
+          name: ${{inputs.artifact_name}}
           path: |
             ${{ steps.tarball.outputs.manifest_name}}
             ${{ steps.tarball.outputs.tarball_name }}
@@ -106,7 +109,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: npm-package-artifacts
+          name: ${{inputs.artifact_name}}
           path: "./"
 
       - name: Setup test project
