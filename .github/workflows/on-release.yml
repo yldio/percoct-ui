@@ -2,7 +2,7 @@ name: Release
 
 on:
   release:
-    types: [published]
+    types: [released]
 
   workflow_dispatch:
     inputs:
@@ -29,5 +29,6 @@ jobs:
       - uses: robinraju/release-downloader@v1
         with:
           tag: ${{inputs.version}}
+          extract: true
 
       - run: ls
