@@ -30,5 +30,6 @@ jobs:
         with:
           tag: ${{inputs.version}}
           extract: true
+          out-file-path: "release-files"
 
       - run: ls
