@@ -14,6 +14,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,3 +36,9 @@ jobs:
           out-file-path: "release-files"
 
       - run: ls
+
+      - run: ls release-files
+
+      - run: |
+          cp release-files/* ./
+          npm publish --provenance-file attestation.json --access public yldio-percoct-*.tgz
