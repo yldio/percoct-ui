@@ -12,17 +12,12 @@ on:
       npm_token:
         required: true
 
-permissions:
-  attestations: write
-  actions: read
-  contents: write # to be able to publish a GitHub release
-  issues: write # to be able to comment on released issues
-  pull-requests: write # to be able to comment on released pull requests
-  id-token: write # to enable use of OIDC for npm provenance
-
 jobs:
   build:
     runs-on: ubuntu-20.04
+    permissions:
+      attestations: write
+      contents: read
     outputs:
       manifest_name: ${{steps.tarball.outputs.manifest_name}}
       tarball_name: ${{steps.tarball.outputs.tarball_name}}
@@ -98,6 +93,8 @@ jobs:
   test:
     needs: ["build"]
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     strategy:
       matrix:
         node-version: [18, 20]

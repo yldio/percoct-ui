@@ -1,4 +1,6 @@
 name: Build Storybook
+permissions:
+  contents: read
 
 on:
   workflow_call:
