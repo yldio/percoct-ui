@@ -35,7 +35,7 @@ jobs:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-build-storybook.yml
     permissions:
-      contents: read
+      contents: write
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
