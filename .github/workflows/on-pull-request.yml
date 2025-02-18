@@ -7,6 +7,9 @@ on:
       - reopened
       - synchronize
 
+permissions:
+  contents: read
+
 concurrency: preview-${{ github.ref }}
 
 jobs:
@@ -35,6 +38,8 @@ jobs:
     if: github.actor != 'dependabot[bot]' && github.event.pull_request.draft == false
     runs-on: ubuntu-20.04
     needs: ["build-storybook"]
+    permissions:
+      contents: write
     environment:
       name: github-pages
       url: ${{ steps.preview.outputs.deployment-url }}
