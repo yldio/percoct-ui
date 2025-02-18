@@ -24,7 +24,8 @@ jobs:
     uses: ./.github/workflows/workflow-build-library.yml
     permissions:
       attestations: write
-      contents: write
+      id-token: write
+      contents: write # semantic-release requires permission even in dry-run mode
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
       npm_token: ${{secrets.NPM_TOKEN}}
