@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/workflow-build-library.yml
     permissions:
       attestations: write
-      contents: read
+      contents: write
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
       npm_token: ${{secrets.NPM_TOKEN}}
