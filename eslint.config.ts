@@ -9,9 +9,23 @@ export default tseslint.config(
   tseslint.configs.strictTypeChecked,
   react.configs.flat.recommended,
   react.configs.flat["jsx-runtime"],
-  reactHooks.configs["recommended-latest"],
   {
-    ignores: ["storybook-static", ".storybook", "coverage", "dist"],
+    files: ["**/*.{js,jsx}"],
+    plugins: { "react-hooks": reactHooks },
+    // ...
+    rules: {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+    },
+  },
+  {
+    ignores: [
+      "storybook-static",
+      ".storybook",
+      "coverage",
+      "dist",
+      "*.config.{ts,js}",
+    ],
   },
   {
     languageOptions: {
