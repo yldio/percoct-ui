@@ -45,6 +45,7 @@ jobs:
     needs: ["build-storybook"]
     permissions:
       contents: write
+      pull-requests: write
     environment:
       name: github-pages
       url: ${{ steps.preview.outputs.deployment-url }}
