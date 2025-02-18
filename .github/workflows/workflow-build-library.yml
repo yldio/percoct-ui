@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       attestations: write
+      id-token: write
       contents: write # semantic-release requires permission even in dry-run mode
     outputs:
       manifest_name: ${{steps.tarball.outputs.manifest_name}}
