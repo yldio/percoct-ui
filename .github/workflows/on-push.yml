@@ -5,24 +5,29 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-
 concurrency: preview-${{ github.ref }}
 
 jobs:
   sanity:
     uses: ./.github/workflows/workflow-sanity.yml
+    permissions:
+      contents: read
+      pull-requests: write
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
   build-storybook:
     uses: ./.github/workflows/workflow-build-storybook.yml
+    permissions:
+      contents: read
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
   build-library:
     uses: ./.github/workflows/workflow-build-library.yml
+    permissions:
+      attestations: write
+      contents: read
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
       npm_token: ${{secrets.NPM_TOKEN}}
@@ -32,13 +37,13 @@ jobs:
   deployment:
     runs-on: ubuntu-20.04
     needs: ["sanity", "build-storybook", "build-library"]
+    permissions:
+      contents: write
     outputs:
       environment_url: https://percoct-ui.yld.engineering
     environment:
       name: github-pages
       url: https://percoct-ui.yld.engineering
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,6 +67,9 @@ jobs:
   tests:
     needs: ["deployment"]
     uses: "./.github/workflows/workflow-tests.yml"
+    permissions:
+      contents: write # required to push commits to the wiki
+      pull-requests: write
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
     with:
@@ -70,6 +78,11 @@ jobs:
   release:
     needs: ["tests"]
     uses: "./.github/workflows/workflow-release.yml"
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
     with:
