@@ -1,6 +1,6 @@
 name: Tests
 permissions:
-  contents: read
+  contents: write # required to push commits to the wiki
   pull-requests: write
 
 on:
