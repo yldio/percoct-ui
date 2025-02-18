@@ -31,7 +31,7 @@ jobs:
         run: npm audit signatures
 
       - name: Prettier
-        uses: EPMatt/reviewdog-action-prettier@v1
+        uses: EPMatt/reviewdog-action-prettier@93fb51ed5da157256e1d8c998fb249837304050c #v1.2.0
         with:
           github_token: ${{ secrets.repo_token }}
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
@@ -58,7 +58,7 @@ jobs:
         run: npm audit signatures
 
       - name: Lint
-        uses: reviewdog/action-eslint@v1
+        uses: reviewdog/action-eslint@9b5b0150e399e1f007ee3c27bc156549810a64e3 #v1.33.0
         with:
           github_token: ${{ secrets.repo_token }}
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
@@ -85,7 +85,7 @@ jobs:
         run: npm audit signatures
 
       - name: Typecheck
-        uses: EPMatt/reviewdog-action-tsc@v1
+        uses: EPMatt/reviewdog-action-tsc@89934d75ee11d1c298bce81efaa4fde6e00cc21c #v1.8.0
         with:
           github_token: ${{ secrets.repo_token }}
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
