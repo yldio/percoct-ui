@@ -13,12 +13,18 @@ jobs:
   sanity:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-sanity.yml
+    permissions:
+      contents: read
+      pull-requests: write
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
   build-library:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-build-library.yml
+    permissions:
+      attestations: write
+      contents: read
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
       npm_token: ${{secrets.NPM_TOKEN}}
@@ -28,13 +34,18 @@ jobs:
   build-storybook:
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/workflow-build-storybook.yml
+    permissions:
+      contents: read
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
 
   deployment:
     if: github.actor != 'dependabot[bot]' && github.event.pull_request.draft == false
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: ["build-storybook"]
+    permissions:
+      contents: write
+      pull-requests: write
     environment:
       name: github-pages
       url: ${{ steps.preview.outputs.deployment-url }}
@@ -62,6 +73,9 @@ jobs:
     if: github.actor != 'dependabot[bot]' && github.event.pull_request.draft == false
     needs: ["deployment"]
     uses: "./.github/workflows/workflow-tests.yml"
+    permissions:
+      contents: write # required to push commits to the wiki
+      pull-requests: write
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
     with:
