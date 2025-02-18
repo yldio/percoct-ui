@@ -18,18 +18,18 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 #v4.2.2
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a #v4.2.0
         with:
           node-version: 20
           cache: "npm"
           registry-url: "https://npm.pkg.github.com"
           scope: "@${{ github.repository_owner }}"
 
-      - uses: robinraju/release-downloader@v1
+      - uses: robinraju/release-downloader@a96f54c1b5f5e09e47d9504526e96febd949d4c2 #v1.11
         with:
           tag: ${{inputs.version}}
           extract: true
