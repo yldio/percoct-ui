@@ -93,7 +93,9 @@ jobs:
     permissions:
       packages: write
       contents: read
+      id-token: write
     secrets:
       repo_token: ${{secrets.GITHUB_TOKEN}}
     with:
       artifact_name: npm-package-artifact
+      version: ${{needs.build-library.outputs.version}}
