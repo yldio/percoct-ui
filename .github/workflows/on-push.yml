@@ -86,3 +86,14 @@ jobs:
       repo_token: ${{secrets.GITHUB_TOKEN}}
     with:
       artifact_name: npm-package-artifact
+
+  publish:
+    needs: ["release"]
+    uses: "./.github/workflows/workflow-publish.yml"
+    permissions:
+      packages: write
+      contents: read
+    secrets:
+      repo_token: ${{secrets.GITHUB_TOKEN}}
+    with:
+      artifact_name: npm-package-artifact

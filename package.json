@@ -15,7 +15,9 @@
   "license": "UNLICENSED",
   "description": "YLD.io's UI Library. Following the YLD.io's design system.",
   "publishConfig": {
-    "provenance": true
+    "registry": "https://npm.pkg.github.com",
+    "provenance": true,
+    "access": "public"
   },
   "repository": {
     "type": "git",
