@@ -2,10 +2,14 @@ name: Publish Package
 permissions:
   packages: write # to publish to GitHub Packages
   contents: read
+  id-token: write # to publish attestation
 
 on:
   workflow_call:
     inputs:
+      version:
+        type: string
+        required: true
       artifact_name:
         type: string
         required: true
@@ -41,12 +45,11 @@ jobs:
           fi
 
           echo "📦 Publishing $TARBALL to GitHub Packages..."
-          npm publish $TARBALL --access public
+          npm publish $TARBALL --tag ${{inputs.version}} --access public
 
           # Verify publication
           PACKAGE_NAME="@yldio/percoct-ui"
-          VERSION=$(node -p "require('./package.json').version")
-          echo "✨ Verifying publication of $PACKAGE_NAME@$VERSION..."
+          echo "✨ Verifying publication of $PACKAGE_NAME@${{inputs.version}} ..."
 
           # Wait for registry to update
           sleep 5
