@@ -57,7 +57,7 @@ jobs:
         run: npm audit signatures
 
       - name: Lint
-        uses: reviewdog/action-eslint@9b5b0150e399e1f007ee3c27bc156549810a64e3 #v1.33.0
+        uses: reviewdog/action-eslint@2fee6dd72a5419ff4113f694e2068d2a03bb35dd #v1.33.2
         with:
           github_token: ${{ secrets.repo_token }}
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
