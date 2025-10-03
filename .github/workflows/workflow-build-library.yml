@@ -74,7 +74,7 @@ jobs:
       - name: Generate build provenance
         if: steps.next-version.outputs.version != 'none'
         id: provenance
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           subject-path: ${{ steps.tarball.outputs.tarball_name }}
 
