@@ -84,7 +84,7 @@ jobs:
         run: npm audit signatures
 
       - name: Typecheck
-        uses: EPMatt/reviewdog-action-tsc@89934d75ee11d1c298bce81efaa4fde6e00cc21c #v1.8.0
+        uses: EPMatt/reviewdog-action-tsc@5160234c919547239e8451fa8e839691eab732e8 #v1.10.0
         with:
           github_token: ${{ secrets.repo_token }}
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
