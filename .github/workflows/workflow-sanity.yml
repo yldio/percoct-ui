@@ -30,7 +30,7 @@ jobs:
         run: npm audit signatures
 
       - name: Prettier
-        uses: EPMatt/reviewdog-action-prettier@93fb51ed5da157256e1d8c998fb249837304050c #v1.2.0
+        uses: EPMatt/reviewdog-action-prettier@f691104cbeb4b0299df971275444c64be93c03ae #v1.3.0
         with:
           github_token: ${{ secrets.repo_token }}
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
