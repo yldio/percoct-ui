@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 #v6.0.0
         with:
@@ -37,6 +39,7 @@ jobs:
       - name: Publish to GitHub Packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.repo_token }}
+          INPUTS_VERSION: ${{inputs.version}}
         run: |
           TARBALL=$(ls yldio-percoct-ui-*.tgz)
           if [ -z "$TARBALL" ]; then
@@ -45,11 +48,11 @@ jobs:
           fi
 
           echo "📦 Publishing $TARBALL to GitHub Packages..."
-          npm publish $TARBALL --tag ${{inputs.version}} --access public
+          npm publish $TARBALL --tag ${INPUTS_VERSION} --access public
 
           # Verify publication
           PACKAGE_NAME="@yldio/percoct-ui"
-          echo "✨ Verifying publication of $PACKAGE_NAME@${{inputs.version}} ..."
+          echo "✨ Verifying publication of $PACKAGE_NAME@${INPUTS_VERSION} ..."
 
           # Wait for registry to update
           sleep 5
