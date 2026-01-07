@@ -111,4 +111,4 @@ jobs:
           github_token: ${{ secrets.repo_token }}
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
           level: warning
-          fail_level: "error"
+          fail_on_error: true
