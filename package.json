@@ -68,7 +68,7 @@
     "globals": "^16.1.0",
     "jiti": "^2.4.2",
     "playwright": "^1.56.1",
-    "prettier": "3.5.3",
+    "prettier": "3.7.4",
     "prop-types": "^15.8.1",
     "rollup": "^4.41.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
