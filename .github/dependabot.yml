@@ -11,6 +11,13 @@ updates:
       day: friday
       time: "09:00"
     rebase-strategy: auto
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: "ci"
+      include: scope
 
   - package-ecosystem: npm
     directory: /
@@ -20,16 +27,30 @@ updates:
       day: friday
       time: "09:00"
     rebase-strategy: auto
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - npm
+    commit-message:
+      prefix: "deps"
+      include: scope
     groups:
       dev-dependencies:
         dependency-type: development
         update-types:
           - minor
           - patch
-          - major
-      dependencies:
+        patterns:
+          - "@types/*"
+          - "eslint*"
+          - "prettier*"
+          - "vitest*"
+          - "*-config"
+      production-dependencies:
         dependency-type: production
         update-types:
           - minor
           - patch
+      major-updates:
+        update-types:
           - major
