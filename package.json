@@ -59,7 +59,7 @@
     "@storybook/react": "^10.1.11",
     "@storybook/react-vite": "^10.1.11",
     "@storybook/test": "^8.5.7",
-    "@storybook/test-runner": "^0.22.0",
+    "@storybook/test-runner": "^0.24.2",
     "@vitest/browser": "^4.0.16",
     "@vitest/coverage-istanbul": "^4.0.16",
     "eslint": "^9.27.0",
