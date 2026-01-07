@@ -27,6 +27,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 #v6.0.0
         with:
@@ -59,7 +60,9 @@ jobs:
 
       - name: Set new version
         if: steps.next-version.outputs.version != 'none'
-        run: npm version ${{ steps.next-version.outputs.version }} --no-git-tag-version
+        run: npm version ${STEPS_NEXT_VERSION_OUTPUTS_VERSION} --no-git-tag-version
+        env:
+          STEPS_NEXT_VERSION_OUTPUTS_VERSION: ${{ steps.next-version.outputs.version }}
 
       - name: Generate tarball with next version
         id: tarball
@@ -80,7 +83,9 @@ jobs:
 
       - name: Copy attestation file
         if: steps.next-version.outputs.version != 'none'
-        run: cp ${{steps.provenance.outputs.bundle-path}} ./attestation.json
+        run: cp ${STEPS_PROVENANCE_OUTPUTS_BUNDLE_PATH} ./attestation.json
+        env:
+          STEPS_PROVENANCE_OUTPUTS_BUNDLE_PATH: ${{steps.provenance.outputs.bundle-path}}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
@@ -132,7 +137,9 @@ jobs:
           npm install -S $PEER_DEPS
 
           # Install the package itself
-          npm install -S ./${{needs.build.outputs.tarball_name}}
+          npm install -S ./${NEEDS_BUILD_OUTPUTS_TARBALL_NAME}
+        env:
+          NEEDS_BUILD_OUTPUTS_TARBALL_NAME: ${{needs.build.outputs.tarball_name}}
 
       - name: Create test files
         run: |
