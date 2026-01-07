@@ -1,0 +1,10 @@
+import{g as u}from"./index-B_Er8qmI.js";import{r as p}from"./index-CVSpUq02.js";function d(t,e){for(var r=0;r<e.length;r++){const o=e[r];if(typeof o!="string"&&!Array.isArray(o)){for(const s in o)if(s!=="default"&&!(s in t)){const a=Object.getOwnPropertyDescriptor(o,s);a&&Object.defineProperty(t,s,a.get?a:{enumerable:!0,get:()=>o[s]})}}}return Object.freeze(Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}))}var i={exports:{}},n={},c;function m(){if(c)return n;c=1;/**
+ * @license React
+ * react-dom-test-utils.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */return(function(){var t=p(),e=!1;n.act=function(r){return e===!1&&(e=!0,console.error("`ReactDOMTestUtils.act` is deprecated in favor of `React.act`. Import `act` from `react` instead of `react-dom/test-utils`. See https://react.dev/warnings/react-dom-test-utils for more info.")),t.act(r)}})(),n}var f;function v(){return f||(f=1,i.exports=m()),i.exports}var l=v();const g=u(l),_=d({__proto__:null,default:g},[l]);export{_ as t};
+//# sourceMappingURL=test-utils-DkdIdsYj.js.map
