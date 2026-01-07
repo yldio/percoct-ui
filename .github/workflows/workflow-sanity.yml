@@ -6,6 +6,9 @@ on:
       repo_token:
         required: true
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -19,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: read
       pull-requests: write # Needed for PR Review comments
       checks: write # For review dog to post check results
     steps:
@@ -52,7 +54,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: read
       pull-requests: write # Needed for PR Review comments
       checks: write # For review dog to post check results
     steps:
@@ -85,7 +86,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: read
       pull-requests: write # Needed for PR Review comments
       checks: write # For review dog to post check results
     steps:
