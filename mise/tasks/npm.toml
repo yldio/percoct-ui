@@ -1,0 +1,16 @@
+["install"]
+alias = "i"
+description = "Install npm dependencies"
+run = "npm install"
+depends_post = ["audit:signatures"]
+
+["install:ci"]
+alias = "ci"
+description = "Clean and Install npm dependencies"
+run = "npm ci"
+depends_post = ["audit:signatures"]
+
+["audit:signatures"]
+alias = 'as'
+description = "Use npm to audit the signatures of installed packages"
+run = "npm audit signatures"

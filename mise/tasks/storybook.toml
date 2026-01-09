@@ -1,0 +1,20 @@
+["storybook:start"]
+alias = "ss"
+description = "Start the development storybook server"
+run = "storybook dev -p 6006"
+
+["storybook:build"]
+description = "Build Storybook "
+alias = "sb"
+run = "storybook build"
+depends = ["storybook:start"]
+
+["storybook:test"]
+description = "Run Storybook tests"
+alias = "st"
+run = "test-storybook --coverage"
+depends = ["storybook:start"]
+
+["storybook:coverage:convert"]
+description = "Convert Storybook coverage into JSON"
+run = "nyc report --reporter=json-summary -t coverage/storybook --report-dir coverage/storybook/converted"

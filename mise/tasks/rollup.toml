@@ -1,0 +1,9 @@
+
+[build]
+description = "Build the project"
+alias = "b"
+run = """
+rollup \
+  --config rollup.config.ts \
+  --configPlugin @rollup/plugin-typescript
+"""

@@ -4,9 +4,13 @@ min_version = "2025.12.13"
 lockfile = true
 
 [env]
-_.path = ['{{config_root}}/node_modules/.bin']
+# Use the project name derived from the current directory
 PROJECT_NAME = "{{ config_root | basename }}"
+
+# Set up the path for node module binaries
+_.path = ['{{config_root}}/node_modules/.bin']
 BIN_PATH = "{{ config_root }}/node_modules/.bin"
+
 NODE_ENV = "{{ env.NODE_ENV | default(value='development') }}"
 
 [tools]
@@ -14,49 +18,14 @@ NODE_ENV = "{{ env.NODE_ENV | default(value='development') }}"
 node = "{{ env['NODE_VERSION'] | default(value='lts') }}"
 npm = "{{ env['NPM_VERSION'] | default(value='11.7.0') }}"
 
-[tasks."npm:install"]
-alias = "i"
-description = "Install npm dependencies"
-run = "npm install"
-depends_post = ["npm:audit:signatures"]
-
-[tasks."npm:install:ci"]
-alias = "ci"
-description = "Install npm dependencies"
-run = "npm ci"
-depends_post = ["npm:audit:signatures"]
-
-[tasks."npm:audit:signatures"]
-alias = 'as'
-description = "Use npm to audit the signatures of installed packages"
-run = "npm audit signatures"
-
-[tasks.start]
-alias = "s"
-description = "Start the development storybook server"
-run = "npm run storybook"
-
-[tasks.lint]
-alias = "l"
-description = "Run ESLint"
-run = "eslint ."
-
-[tasks.test]
-description = "Run tests"
-alias = "t"
-run = "test-storybook"
-depends = ["start"]
-
-[tasks.build]
-description = "Build the project"
-alias = "b"
-run = "npm run build"
-
-[tasks.info]
-description = "Print project information"
-run = '''
-echo "Project: $PROJECT_NAME"
-echo "NODE_ENV: $NODE_ENV"
-echo "NODE_VERSION: $NODE_VERSION"
-echo "NPM_VERSION: $NPM_VERSION"
-'''
+[task_config]
+dir = "{{cwd}}"
+includes = [
+  "mise/tasks/eslint.toml",
+  "mise/tasks/meta.toml",
+  "mise/tasks/npm.toml",
+  "mise/tasks/prettier.toml",
+  "mise/tasks/rollup.toml",
+  "mise/tasks/storybook.toml",
+  "mise/tasks/typescript.toml",
+]
