@@ -55,7 +55,7 @@ jobs:
           fi
 
       - name: Build Library
-        run: npm run build
+        run: mise run build
 
       - name: Set new version
         if: steps.next-version.outputs.version != 'none'

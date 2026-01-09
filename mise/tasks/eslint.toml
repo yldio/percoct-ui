@@ -1,0 +1,5 @@
+["lint:check"]
+run = "eslint ."
+
+["lint:fix"]
+run = "eslint --fix ."

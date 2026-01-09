@@ -1,0 +1,24 @@
+
+[check]
+description = "Run all code quality checks (typecheck, lint, format)"
+depends = ["format:check", "lint:check", "typescript:check"]
+
+["check:fix"]
+description = "Run all code quality fixes (lint, format)"
+depends = ["format:fix", "lint:fix"]
+
+[tasks]
+description = "Print project information"
+run = '''
+echo "Project: $PROJECT_NAME"
+echo "NODE_ENV: $NODE_ENV"
+echo "NODE_VERSION: $NODE_VERSION"
+echo "NPM_VERSION: $NPM_VERSION"
+'''
+
+[clean]
+description = "Clean generated assets from the project"
+alias = "b"
+run = """
+rm -rf node_modules
+"""

@@ -1,0 +1,5 @@
+["typescript:compile"]
+run = "tsc --project ./tsconfig.json"
+
+["typescript:check"]
+run = "tsc --project ./tsconfig.json --noEmit"
