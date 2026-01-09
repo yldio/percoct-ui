@@ -106,7 +106,7 @@ jobs:
         continue-on-error: false
 
       - name: Typecheck
-        uses: EPMatt/reviewdog-action-tsc@5160234c919547239e8451fa8e839691eab732e8 #v1.10.0
+        uses: EPMatt/reviewdog-action-tsc@63d923a3c5b4497671940b8874f58a404e2351b5 #v1.11.0
         with:
           github_token: ${{ secrets.repo_token }}
           reporter: ${{ github.event_name == 'push' && 'github-check' || 'github-pr-review' }}
